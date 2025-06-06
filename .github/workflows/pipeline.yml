@@ -1,0 +1,44 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: myapp
+  DOCKERHUB_USERNAME: ${{ secrets.hhimanshuu1 }}
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.hhimanshuu1 }}
+          password: ${{ secrets.dckr_pat_9hN-4YzY2NosQ4Nmb8bsBNdJ1DU }}
+
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME:latest .
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:latest
+          format: 'table'
+          exit-code: '0'
+
+      - name: Push Docker image
+        run: |
+          docker tag $IMAGE_NAME:latest $hhimanshuu1/$IMAGE_NAME:latest
+          docker push $hhimanshuu1/$IMAGE_NAME:latest
