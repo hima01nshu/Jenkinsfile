@@ -1,0 +1,25 @@
+name: Artifact Pipeline
+
+on:
+  push:
+    branches: [main]  # Trigger on push to main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create artifact directory and file
+        run: |
+          mkdir -p build
+          echo "Build completed at $(date)" > build/build-info.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-log
+          path: build/
+
